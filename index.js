@@ -6,21 +6,13 @@ import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
 
-import { error } from "console";
+// import { error } from "console";
 
 const app = express();
 
 app.use(express.json());
 
-app.use(
-  cors({
-    origin: [
-      "http://localhost:5173",
-      "https://full-stack-todo-app-deployed.netlify.app",
-    ],
-    credentials: true,
-  })
-);
+app.use(cors());
 app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
