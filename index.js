@@ -10,16 +10,36 @@ import { error } from "console";
 
 const app = express();
 
-app.use(express.json());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://full-stack-todo-app-deployed.netlify.app",
+];
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://full-stack-task-manager-app.netlify.app",
-    ],
+    origin: function (origin, callback) {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   })
 );
+
+app.use(express.json());
+
+app.options("*", cors());
+
+// app.use(
+//   cors({
+//     origin: [
+//       "http://localhost:5173",
+//       "https://full-stack-todo-app-deployed.netlify.app",
+//     ],
+//     credentials: true,
+//   })
+// );
 app.use(cookieParser());
 
 app.post("/signup", async (req, res) => {
