@@ -5,6 +5,7 @@ import cors from "cors";
 import { ObjectId } from "mongodb";
 import jwt from "jsonwebtoken";
 import cookieParser from "cookie-parser";
+
 import { error } from "console";
 
 const app = express();
@@ -12,7 +13,10 @@ const app = express();
 app.use(express.json());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",
+      "https://full-stack-task-manager-app.netlify.app",
+    ],
     credentials: true,
   })
 );
