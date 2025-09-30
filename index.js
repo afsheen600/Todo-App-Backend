@@ -74,10 +74,23 @@ app.post("/login", async (req, res) => {
 });
 
 app.post("/add-task", verifyJWTToken, async (req, res) => {
-  const db = await connection();
-  const collection = db.collection(collectionName);
-  const result = await collection.insertOne(req.body);
-  res.send("Task added successfully");
+  try {
+    const db = await connection();
+    const collection = db.collection(collectionName);
+    const result = await collection.insertOne(req.body);
+
+    res.send({
+      message: "Task added successfully",
+      success: true,
+      result,
+    });
+  } catch (error) {
+    res.status(500).send({
+      message: "Error adding task",
+      success: false,
+      error: error.message,
+    });
+  }
 });
 
 app.get("/tasks", verifyJWTToken, async (req, res) => {
