@@ -146,15 +146,33 @@ app.get("/", (req, res) => {
 });
 
 function verifyJWTToken(req, res, next) {
-  const token = req.cookies["token"];
+  let token = req.cookies["token"];
+
+  // ✅ if no token in cookies, check headers
+  if (!token && req.headers.authorization) {
+    const authHeader = req.headers.authorization;
+    if (authHeader.startsWith("Bearer ")) {
+      token = authHeader.split(" ")[1]; // remove "Bearer "
+    } else {
+      token = authHeader; // in case frontend sends just the token
+    }
+  }
+
+  if (!token) {
+    return res.status(401).send({
+      message: "No token provided",
+      success: false,
+    });
+  }
+
   jwt.verify(token, "Google", (error, decoded) => {
     if (error) {
-      return res.send({
+      return res.status(401).send({
         message: "invalid token",
         success: false,
       });
     }
-    console.log(decoded);
+    console.log("Decoded user:", decoded);
     next();
   });
 }
